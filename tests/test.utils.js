@@ -394,6 +394,29 @@ testUtils.cleanUpCors = function(dburl, callback_) {
   }
 }
 
+testUtils.cleanDbs = function(QUnit, dbs) {
+  return function() {
+    QUnit.stop();
+    var deleted = 0;
+    function done() {
+      deleted++;
+      if (deleted === dbs.length) {
+        QUnit.start();
+      }
+    }
+    dbs.forEach(function(db) {
+      PouchDB.destroy(db, done);
+    });
+  }
+}
+
+
+testUtils.args = function() {
+  // if node, return process.argv or process.env
+  // if browser parse url args
+  return false;
+};
+
 if (typeof module !== 'undefined' && module.exports) {
   PouchDB = require('../lib');
   module.exports = testUtils;
